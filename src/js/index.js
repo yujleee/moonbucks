@@ -1,28 +1,3 @@
-/**
- * TODO localStorage read & write
- * [x] localStorage에 데이터를 저장한다.
- *  - [x] 메뉴를 추가할 때
- *  - [x] 메뉴를 수정할 때
- *  - [x] 메뉴를 삭제할 때
- * [x] localStorage에 있는 데이터를 읽어온다. => 데이터 저장 시에
- *
- * TODO 카테고리별 메뉴판 관리
- * [x] 에스프레소 메뉴판 관리
- * [x] 프라푸치노 메뉴판 관리
- * [x] 블렌디드 메뉴판 관리
- * [x] 티바나 메뉴판 관리
- * [x] 디저트 메뉴판 관리
- *
- * TODO 페이지 접근시 최초 데이터 read & rendering
- * [x] 페이지에 최초로 로딩할 때 localStorage에서 에스프레소 메뉴를 읽어온다.
- * [x] 에스프레소 메뉴를 페이지에 그려준다.
- *
- * TODO 품절
- * [x] 품절 버튼을 추가한다.
- * [x] 품절 버튼을 클릭하면 localStorage에 상태값이 저장된다.
- * [x] 클릭했을 때 가장 가까운 li 태그(해당 메뉴)에 sold-out class를 추가하여 상태를 변경한다.
- */
-
 import { $ } from './utils/dom.js';
 import { store } from './store/store.js';
 
@@ -36,7 +11,6 @@ function App() {
     desert: [],
   };
 
-  // 현재 카테고리 상태관리
   this.currentCategory = 'espresso';
 
   this.init = () => {
