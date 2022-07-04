@@ -17,7 +17,10 @@
     "url": "https://github.com/yujleee/moonbucks/issues"
   },
   "homepage": "https://github.com/yujleee/moonbucks#readme",
-  "dependencies": {
-    "eslint": "^8.19.0"
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-html": "^6.2.0",
+    "eslint-plugin-import": "^2.26.0"
   }
 }
