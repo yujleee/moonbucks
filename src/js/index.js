@@ -3,25 +3,6 @@ import { $ } from './utils/dom.js';
 // import { store } from './store/store.js';
 import menuApi from './api/menu.js';
 
-/**
- * 스텝3 요구사항 => 요구하는 단위를 최소한으로 쪼개야 함. 도움 요청시에도 쉽게 요청하고 받을 수 있음
- * TODO 서버 요청
- * [x] 웹 서버를 띄운다
- * [x] 서버에 새로운 메뉴명이 추가될 수 있도록 요청한다.
- * [x] 서버에 카테고리별 메뉴 리스트를 요청한다.
- * [x] 서버에 수정된 메뉴명을 업데이트 할 수 있도록 요청한다.
- * [x] 서버에 품절상태를 토글할 수 있도록 요청한다.
- * [x] 서버에 메뉴가 삭제 될 수 있도록 요청한다.
- *
- * TODO 리팩터링
- * [x] localStorage에 저장하는 로직은 지운다.
- * [x] fetch 비동기 api를 사용하는 부분을 async await을 사용하여 구현한다.
- *
- * TODO UX
- * [] API 통신이 실패하는 경우에 대해 사용자가 알 수 있게 alert으로 예외처리를 진행한다.
- * [] 중복되는 메뉴는 추가할 수 없다.
- */
-
 function App() {
   this.menu = {
     espresso: [],
@@ -66,10 +47,17 @@ function App() {
       return;
     }
 
+    const duplicatedMenu = this.menu[this.currentCategory].find((item) => item.name === $('#menu-name').value);
+    if (duplicatedMenu) {
+      alert('이미 등록된 메뉴입니다.');
+      $('#menu-name').value = '';
+      return;
+    }
+
     const menuName = $('#menu-name').value;
     await menuApi.createMenu(this.currentCategory, menuName);
-    $('#menu-name').value = '';
     render();
+    $('#menu-name').value = '';
   };
 
   const updateMenuName = async (e) => {
