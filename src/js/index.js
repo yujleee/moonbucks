@@ -20,7 +20,8 @@ function App() {
     initEventListeners();
   };
 
-  const render = () => {
+  const render = async () => {
+    this.menu[this.currentCategory] = await menuApi.getAllMenuByCategory(this.currentCategory);
     const template = this.menu[this.currentCategory]
       .map(
         (item) => `<li data-menu-id="${item.id}" class=" menu-list-item d-flex items-center py-2">
@@ -48,8 +49,6 @@ function App() {
 
     const menuName = $('#menu-name').value;
     await menuApi.createMenu(this.currentCategory, menuName);
-
-    this.menu[this.currentCategory] = await menuApi.getAllMenuByCategory(this.currentCategory);
     $('#menu-name').value = '';
     render();
   };
@@ -59,7 +58,6 @@ function App() {
     const $menuName = e.target.closest('li').querySelector('.menu-name');
     const updatedMenuName = prompt('수정할 메뉴명을 입력하세요', $menuName.innerText);
     await menuApi.updateMenu(this.currentCategory, updatedMenuName, menuId);
-    this.menu[this.currentCategory] = await menuApi.getAllMenuByCategory(this.currentCategory);
     render();
   };
 
@@ -67,7 +65,6 @@ function App() {
     if (confirm('정말 삭제하시겠습니까?')) {
       const { menuId } = e.target.closest('li').dataset;
       await menuApi.deleteMenu(this.currentCategory, menuId);
-      this.menu[this.currentCategory] = await menuApi.getAllMenuByCategory(this.currentCategory);
       render();
     }
   };
@@ -75,7 +72,6 @@ function App() {
   const soldOutMenu = async (e) => {
     const { menuId } = e.target.closest('li').dataset;
     await menuApi.toggleSoldOutMenu(this.currentCategory, menuId);
-    this.menu[this.currentCategory] = await menuApi.getAllMenuByCategory(this.currentCategory);
     render();
   };
 
@@ -93,7 +89,6 @@ function App() {
       if (isCategoryButton) {
         this.currentCategory = e.target.dataset.categoryName;
         $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`;
-        this.menu[this.currentCategory] = await menuApi.getAllMenuByCategory(this.currentCategory);
         render();
       }
     });
