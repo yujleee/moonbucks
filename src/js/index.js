@@ -1,7 +1,20 @@
 // eslint-disable-next-line no-unused-vars
 const $ = (selector) => document.querySelector(selector);
 
+const store = {
+  setLocalStroage(menu) {
+    localStorage.setItem('menu', JSON.stringify(menu));
+  },
+
+  getLocalStorage() {
+    return localStorage.getItem('menu');
+  },
+};
+
 function App() {
+  // 현재 상태를 담을 this
+  this.menu = [];
+
   const updateMenuCount = () => {
     const currentCount = $('#menu-list').children.length;
     $('.menu-count').innerText = `총 ${currentCount}개`;
@@ -15,15 +28,20 @@ function App() {
     }
 
     const menuName = $('#menu-name').value;
-
-    const template = `<li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${menuName}</span>
+    const templete = this.menu
+      .map(
+        (menu) => `<li class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name">${menu.name}</span>
         <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">
           수정</button>
         <button type="button"class="bg-gray-50 text-gray-500 text-sm menu-remove-button">
-          삭제 </button></li>`;
+          삭제 </button></li>`
+      )
+      .join('');
 
-    $('#menu-list').insertAdjacentHTML('beforeend', template);
+    this.menu.push({ name: menuName });
+    store.setLocalStroage(this.menu);
+    $('#menu-list').innerHTML = templete;
     $('#menu-name').value = '';
     updateMenuCount();
   };
@@ -53,4 +71,4 @@ function App() {
   });
 }
 
-App();
+const app = new App();
