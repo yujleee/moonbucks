@@ -14,10 +14,18 @@ const store = {
 
 function App() {
   // 현재 상태를 담을 this
-  this.menu = [];
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: [],
+  };
+
+  this.currentCategory = 'espresso';
 
   this.init = () => {
-    if (store.getLocalStorage().length >= 1) {
+    if (store.getLocalStorage()) {
       this.menu = store.getLocalStorage();
     }
 
@@ -30,7 +38,7 @@ function App() {
   };
 
   const render = () => {
-    const template = this.menu
+    const template = this.menu[this.currentCategory]
       .map(
         (menu, index) => `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
       <span class="w-100 pl-2 menu-name">${menu.name}</span>
@@ -51,7 +59,7 @@ function App() {
 
     const menuName = $('#menu-name').value;
 
-    this.menu.push({ name: menuName });
+    this.menu[this.currentCategory].push({ name: menuName });
     store.setLocalStroage(this.menu);
     render();
     $('#menu-name').value = '';
@@ -62,7 +70,7 @@ function App() {
     const menuName = e.target.closest('li').querySelector('.menu-name');
     const newMenu = prompt('메뉴 이름을 입력해주세요', menuName.innerText);
 
-    this.menu[menuId].name = newMenu;
+    this.menu[this.currentCategory][menuId].name = newMenu;
     store.setLocalStroage(this.menu);
 
     menuName.innerText = newMenu;
@@ -71,7 +79,7 @@ function App() {
   const removeMenuName = (e) => {
     if (confirm('메뉴를 삭제하시겠습니까?')) {
       const { menuId } = e.target.closest('li').dataset;
-      this.menu.splice(menuId, 1);
+      this.menu[this.currentCategory].splice(menuId, 1);
       store.setLocalStroage(this.menu);
       e.target.closest('li').remove();
       render();
@@ -87,6 +95,16 @@ function App() {
   $('#menu-list').addEventListener('click', (e) => {
     if (e.target.classList.contains('menu-edit-button')) updateMenuName(e);
     if (e.target.classList.contains('menu-remove-button')) removeMenuName(e);
+  });
+
+  $('nav').addEventListener('click', (e) => {
+    const isCategoryButton = e.target.classList.contains('cafe-category-name');
+    if (isCategoryButton) {
+      const category = e.target.dataset.categoryName;
+      this.currentCategory = category;
+      $('#category-title').innerText = `${e.target.innerText} 메뉴관리`;
+      render();
+    }
   });
 }
 
