@@ -65,7 +65,7 @@ function App() {
     $('#menu-name').value = '';
   };
 
-  const updateMenuName = (e) => {
+  const updateMenu = (e) => {
     const { menuId } = e.target.closest('li').dataset;
     const menuName = e.target.closest('li').querySelector('.menu-name');
     const newMenu = prompt('메뉴 이름을 입력해주세요', menuName.innerText);
@@ -76,7 +76,7 @@ function App() {
     menuName.innerText = newMenu;
   };
 
-  const removeMenuName = (e) => {
+  const removeMenu = (e) => {
     if (confirm('메뉴를 삭제하시겠습니까?')) {
       const { menuId } = e.target.closest('li').dataset;
       this.menu[this.currentCategory].splice(menuId, 1);
@@ -93,8 +93,8 @@ function App() {
   });
 
   $('#menu-list').addEventListener('click', (e) => {
-    if (e.target.classList.contains('menu-edit-button')) updateMenuName(e);
-    if (e.target.classList.contains('menu-remove-button')) removeMenuName(e);
+    if (e.target.classList.contains('menu-edit-button')) updateMenu(e);
+    if (e.target.classList.contains('menu-remove-button')) removeMenu(e);
   });
 
   $('nav').addEventListener('click', (e) => {
