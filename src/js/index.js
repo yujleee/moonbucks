@@ -1,7 +1,6 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line no-unused-vars
 import { $ } from './util/dom.js';
-import { store } from './store/store.js';
 
 const BASE_URL = 'http://localhost:3000/api';
 
