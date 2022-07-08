@@ -3,6 +3,63 @@
 import { $ } from './util/dom.js';
 import { store } from './store/store.js';
 
+const BASE_URL = 'http://localhost:3000/api';
+
+const menuApi = {
+  async getAllMenu(category) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+    return response.json();
+  },
+
+  async addMenu(category, name) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({ name }),
+    });
+
+    if (!response.ok) {
+      console.error(response);
+    }
+  },
+
+  async updateMenu(category, name, menuId) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({ name }),
+    });
+
+    if (!response.ok) {
+      console.error(response);
+    }
+  },
+
+  async removeMenu(category, menuId) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      console.error(response);
+    }
+  },
+
+  async toggleSoldOutMenu(category, menuId) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu/${menuId}/soldout`, {
+      method: 'PUT',
+    });
+
+    if (!response.ok) {
+      console.error(response);
+    }
+  },
+};
+
 function App() {
   // 현재 상태를 담을 this
   this.menu = {
@@ -15,11 +72,8 @@ function App() {
 
   this.currentCategory = 'espresso';
 
-  this.init = () => {
-    if (store.getLocalStorage()) {
-      this.menu = store.getLocalStorage();
-    }
-
+  this.init = async () => {
+    this.menu[this.currentCategory] = await menuApi.getAllMenu(this.currentCategory);
     render();
   };
 
@@ -28,11 +82,12 @@ function App() {
     $('.menu-count').innerText = `총 ${currentCount}개`;
   };
 
-  const render = () => {
+  const render = async () => {
+    this.menu[this.currentCategory] = await menuApi.getAllMenu(this.currentCategory);
     const template = this.menu[this.currentCategory]
       .map(
-        (menu, index) => `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
-      <span class="w-100 pl-2 menu-name ${menu.soldOut ? 'sold-out' : ''}">${menu.name}</span>
+        (menu) => `<li data-menu-id="${menu.id}" class="menu-list-item d-flex items-center py-2">
+        <span class="w-100 pl-2 menu-name ${menu.isSoldOut ? 'sold-out' : ''}">${menu.name}</span>
       <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button">품절</button>
       <button type="button" class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button">수정</button>
       <button type="button"class="bg-gray-50 text-gray-500 text-sm menu-remove-button">삭제 </button></li>`
@@ -42,7 +97,7 @@ function App() {
     updateMenuCount();
   };
 
-  const addMenu = () => {
+  const addMenu = async () => {
     if ($('#menu-name').value.trim() === '') {
       alert('메뉴를 입력해주세요.');
       $('#menu-name').value = '';
@@ -50,38 +105,33 @@ function App() {
     }
 
     const menuName = $('#menu-name').value;
-
-    this.menu[this.currentCategory].push({ name: menuName });
-    store.setLocalStorage(this.menu);
-    render();
+    await menuApi.addMenu(this.currentCategory, menuName);
     $('#menu-name').value = '';
+    render();
   };
 
-  const updateMenu = (e) => {
+  const updateMenu = async (e) => {
     const { menuId } = e.target.closest('li').dataset;
     const menuName = e.target.closest('li').querySelector('.menu-name');
     const newMenu = prompt('메뉴 이름을 입력해주세요', menuName.innerText);
 
-    this.menu[this.currentCategory][menuId].name = newMenu;
-    store.setLocalStorage(this.menu);
-
+    await menuApi.updateMenu(this.currentCategory, newMenu, menuId);
     menuName.innerText = newMenu;
+    render();
   };
 
-  const removeMenu = (e) => {
+  const removeMenu = async (e) => {
     if (confirm('메뉴를 삭제하시겠습니까?')) {
       const { menuId } = e.target.closest('li').dataset;
-      this.menu[this.currentCategory].splice(menuId, 1);
-      store.setLocalStorage(this.menu);
+      await menuApi.removeMenu(this.currentCategory, menuId);
       e.target.closest('li').remove();
       render();
     }
   };
 
-  const soldOutMenu = (e) => {
+  const soldOutMenu = async (e) => {
     const { menuId } = e.target.closest('li').dataset;
-    this.menu[this.currentCategory][menuId].soldOut = !this.menu[this.currentCategory][menuId].soldOut;
-    store.setLocalStorage(this.menu);
+    await menuApi.toggleSoldOutMenu(this.currentCategory, menuId);
     render();
   };
 
