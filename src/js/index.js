@@ -1,16 +1,7 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line no-unused-vars
-import { $ } from './util/dom';
-
-const store = {
-  setLocalStorage(menu) {
-    localStorage.setItem('menu', JSON.stringify(menu));
-  },
-
-  getLocalStorage() {
-    return JSON.parse(localStorage.getItem('menu'));
-  },
-};
+import { $ } from './util/dom.js';
+import { store } from './store/store.js';
 
 function App() {
   // 현재 상태를 담을 this
