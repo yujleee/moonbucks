@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line no-unused-vars
-const $ = (selector) => document.querySelector(selector);
+import { $ } from './util/dom';
 
 const store = {
   setLocalStorage(menu) {
@@ -101,8 +101,14 @@ function App() {
   });
 
   $('#menu-list').addEventListener('click', (e) => {
-    if (e.target.classList.contains('menu-edit-button')) updateMenu(e);
-    if (e.target.classList.contains('menu-remove-button')) removeMenu(e);
+    if (e.target.classList.contains('menu-edit-button')) {
+      updateMenu(e);
+      return;
+    }
+    if (e.target.classList.contains('menu-remove-button')) {
+      removeMenu(e);
+      return;
+    }
     if (e.target.classList.contains('menu-sold-out-button')) soldOutMenu(e);
   });
 
